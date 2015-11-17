@@ -19,7 +19,7 @@ GENDER_CHOICES = [('M', 'Masculino'), ('F', 'Feminino')]
 ARROLADO_CHOICES = [('Profissao de fe', 'Profissao de fe'), ('Transferencia', 'Transferencia')]
 
 class Cargo(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     descricao = models.CharField(max_length=45)
 
     def __str__(self):
@@ -31,7 +31,7 @@ class Cargo(models.Model):
 
 
 class Cidade(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     estado = models.ForeignKey('Estado', db_column='estado',blank=True, null=True)
     nome = models.CharField(max_length=45)
 
@@ -43,7 +43,7 @@ class Cidade(models.Model):
         db_table = 'cidade'
         
 class Escolaridade(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     descricao = models.CharField(max_length=55)
 
     def __str__(self):
@@ -55,7 +55,7 @@ class Escolaridade(models.Model):
 
 
 class Estado(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=45)
     sigla = models.CharField(max_length=4)
 
@@ -68,7 +68,7 @@ class Estado(models.Model):
 
 
 class Estadocivil(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     descricao = models.CharField(max_length=45)
 
     def __str__(self):
@@ -80,7 +80,7 @@ class Estadocivil(models.Model):
 
 
 class Membro(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     pessoa = models.ForeignKey('Pessoa', db_column='pessoa',)
     cargo = models.ForeignKey(Cargo, db_column='cargo', blank=True, null=True)
     data_entrada = models.DateField(blank=True, null=True)
@@ -98,12 +98,12 @@ class Membro(models.Model):
 
 
 class Pessoa(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=95)
     data_nascimento = models.DateField(blank=True, null=True)
     sexo = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     estado_civil = models.ForeignKey(Estadocivil, db_column='estado_civil', blank=True, null=True)
-    naturalidade = models.CharField(max_length=45, blank=True, null=True)
+    naturalidade =  models.ForeignKey(Cidade, db_column='naturalidade', blank=True, null=True,related_name='+')
     rg = models.CharField(max_length=45, blank=True, null=True)
     cpf = models.CharField(max_length=45, blank=True, null=True)
     profissao = models.CharField(max_length=50, blank=True, null=True)
@@ -125,7 +125,7 @@ class Pessoa(models.Model):
 
 
 class Religioes(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     descricao = models.CharField(max_length=45)
 
     def __str__(self):
@@ -136,7 +136,7 @@ class Religioes(models.Model):
         db_table = 'religioes'
         
 class Culto(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     data = models.DateField(blank=True, null=True)
     inicio = models.TimeField(blank=True, null=True)
     fim = models.TimeField(blank=True, null=True)
@@ -144,9 +144,9 @@ class Culto(models.Model):
     dizimos = models.FloatField(blank=True, null=True)
     ofertas = models.FloatField(blank=True, null=True)
     arrecadacao_total = models.FloatField(blank=True, null=True)
-    abertura = models.ForeignKey(Pessoa,blank=True, null=True,related_name='+')
+    abertura = models.ForeignKey(Pessoa, db_column='abertura', blank=True, null=True,related_name='+')
     musicos =  models.ManyToManyField(Membro,blank=True, null=True,related_name='+')
-    pregador =  models.ForeignKey(Pessoa,blank=True, null=True,related_name='+')
+    pregador =  models.ForeignKey(Pessoa, db_column='pregador', blank=True, null=True,related_name='+')
     pastores_presentes = models.ManyToManyField(Membro,blank=True, null=True,related_name='+')
     diaconos = models.ManyToManyField(Membro,blank=True, null=True,related_name='+')
     observacoes = models.TextField(blank=True, null=True)
