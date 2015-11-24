@@ -82,7 +82,8 @@ class Estadocivil(models.Model):
 class Membro(models.Model):
     id = models.AutoField(primary_key=True)
     pessoa = models.ForeignKey('Pessoa', db_column='pessoa',)
-    cargo = models.ForeignKey(Cargo, db_column='cargo', blank=True, null=True)
+    #cargo = models.ForeignKey(Cargo, db_column='cargo', blank=True, null=True)
+    cargo =  models.ManyToManyField(Cargo,blank=True, null=True,related_name='+')
     data_entrada = models.DateField(blank=True, null=True)
     arrolado_por = models.CharField(max_length=45, choices=ARROLADO_CHOICES, blank=True, null=True)
     data_batismo = models.DateField(blank=True, null=True)
