@@ -17,6 +17,7 @@ class PessoaAdmin(admin.ModelAdmin):
     _fields=['nome']
     #list_display = _fields
     #list_display_links = list_display
+    ordering = ['nome']
 admin.site.register(Pessoa,PessoaAdmin)
 
 class CidadeAdmin(admin.ModelAdmin):
@@ -76,6 +77,13 @@ class CargoAdmin(admin.ModelAdmin):
 admin.site.register(Cargo,CargoAdmin)
 
 class CultoAdmin(admin.ModelAdmin):
+    
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['musicos'].queryset = Membro.objects.filter(cargo__exact=3)
+        context['adminform'].form.fields['diaconos'].queryset = Membro.objects.filter(cargo__exact=2)
+        context['adminform'].form.fields['pastores_presentes'].queryset = Membro.objects.filter(cargo__exact=1)
+        return super(CultoAdmin, self).render_change_form(request, context, args, kwargs)
+    
     search_fields=[]
     list_filter=[]
     #_fields=[]
