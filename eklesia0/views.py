@@ -25,3 +25,4 @@ class Log(TemplateView):
         context = TemplateView.get_context_data(self, **kwargs) 
         context['logs']= my_custom_sql(self)
         return context
+    

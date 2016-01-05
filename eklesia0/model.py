@@ -10,13 +10,18 @@
 from __future__ import unicode_literals
 
 import locale
+
+from django.db import models
+from django.db.models.signals import m2m_changed
+from django.dispatch.dispatcher import receiver
+
 locale.setlocale(locale.LC_TIME, "ptb")
 #locale.setlocale(locale.LC_TIME, "pt_BR") #Unix mode
-from django.db import models
 
 YESORNO_CHOICES = [('S', 'Sim'), ('N', 'Nao')]
 GENDER_CHOICES = [('M', 'Masculino'), ('F', 'Feminino')]
 ARROLADO_CHOICES = [('Profissao de fe', 'Profissao de fe'), ('Transferencia', 'Transferencia')]
+TRANSACOES_CHOICES = [(1, 'entrada'),(2, 'saida')]
 
 class Cargo(models.Model):
     id = models.AutoField(primary_key=True)
@@ -155,6 +160,24 @@ class Culto(models.Model):
     def __str__(self):
         return self.data.strftime("%A - %d de %B de %Y")
     
+    def save(self, *args, **kwargs):
+        self.arrecadacao_total = self.dizimos + self.ofertas
+        super(Culto, self).save(*args, **kwargs)
+    
     class Meta:
         managed = True
         db_table = 'culto'
+
+class FluxodeCaixa(models.Model):
+    id = models.AutoField(primary_key=True)
+    tipo = models.SmallIntegerField(choices=TRANSACOES_CHOICES)
+    quantidade = models.DecimalField(max_digits=12, decimal_places=2)
+    data = models.DateField(blank=True, null=True)
+    descricao = models.TextField()
+            
+    def __str__(self):
+        return self.descricao
+
+    class Meta:
+        managed = True
+        db_table = 'fluxodecaixa'
